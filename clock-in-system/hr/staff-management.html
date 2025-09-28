@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Management - NJSMA HR Dashboard</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="attendance-report.html">Attendance Records</a></li>
+        <li><a href="leave-requests.html">Leave Requests</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="../index.html" onclick="logoutHR()">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section>
+        <h2>Staff Management</h2>
+        
+        <!-- Role-based Welcome Message -->
+        <div id="roleMessage" class="role-message">
+          <p id="welcomeMessage">Welcome to Staff Management</p>
+        </div>
+        
+        <!-- Add Individual Staff Section -->
+        <div class="add-staff-section">
+          <h3>➕ Add New Staff Member</h3>
+          <form id="addStaffForm" class="staff-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="staffName">Staff Name: <span class="required">*</span></label>
+                <input type="text" id="staffName" required placeholder="Enter full name" />
+              </div>
+              <div class="form-group">
+                <label for="staffId">Staff ID: <span class="required">*</span></label>
+                <input type="text" id="staffId" required placeholder="Enter unique staff ID" />
+              </div>
+              <div class="form-group">
+                <label for="staffDepartment">Department/Unit:</label>
+                <input type="text" id="staffDepartment" placeholder="e.g., Administration, HR, Finance" />
+              </div>
+              <div class="form-group">
+                <label for="staffEmail">Email Address:</label>
+                <input type="email" id="staffEmail" placeholder="staff@njsma.gov.gh" />
+              </div>
+              <div class="form-group">
+                <label for="staffContact">Contact Number:</label>
+                <input type="tel" id="staffContact" placeholder="0244123456" />
+              </div>
+              <div class="form-group form-actions">
+                <button type="submit" class="btn-add-staff">
+                  <span class="btn-icon">👤</span>
+                  <span class="btn-text">Add Staff Member</span>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div id="addStaffMessage"></div>
+        </div>
+        
+        <!-- Staff Upload Section -->
+        <div class="staff-upload">
+          <h3>Bulk Upload Staff Data</h3>
+          <p>Upload an Excel (.xlsx, .xls) or CSV file containing multiple staff records</p>
+          
+          <div class="upload-controls">
+            <div class="file-input-wrapper">
+              <input type="file" id="staffFileInput" class="file-input" accept=".xlsx,.xls,.csv" />
+              <label for="staffFileInput" class="file-input-btn">📁 Choose File</label>
+              <span class="file-selected" id="selectedFileName"></span>
+            </div>
+            
+            <button id="uploadBtn" onclick="processStaffFile()" class="upload-btn-hidden" style="display: none;">
+              📤 Upload Staff Data
+            </button>
+          </div>
+          
+          <div class="upload-info">
+            <strong>📋 Enhanced File Format Requirements:</strong><br>
+            <div class="format-options">
+              <div class="format-option">
+                <strong>Excel Files (.xlsx, .xls) - Recommended Columns:</strong><br>
+                • <strong>Name</strong> (Required) - Full staff name<br>
+                • <strong>Staff ID</strong> (Required) - Unique identifier<br>
+                • <strong>Department</strong> (Optional) - Department/Unit name<br>
+                • <strong>Email</strong> (Optional) - For notifications<br>
+                • <strong>Contact</strong> (Optional) - Phone number<br>
+                • Headers are automatically detected<br>
+                • Empty rows are ignored
+              </div>
+              <div class="format-option">
+                <strong>CSV Files (.csv) - Column Order:</strong><br>
+                • Column 1: Staff Name (Required)<br>
+                • Column 2: Staff ID (Required)<br>
+                • Column 3: Department (Optional)<br>
+                • Column 4: Email (Optional)<br>
+                • Column 5: Contact (Optional)<br>
+                • Use comma separation
+              </div>
+            </div>
+            
+            <div class="upload-tips">
+              <strong>💡 Enhanced Upload Tips:</strong><br>
+              • Staff IDs should be unique (3-20 characters)<br>
+              • Names should be complete (2-100 characters)<br>
+              • Email addresses enable notification features<br>
+              • Department names enable departmental reports<br>
+              • Contact numbers for emergency communication<br>
+              • Maximum file size: 10MB<br>
+              • Maximum records per upload: 1,000
+            </div>
+            
+            <div class="sample-formats">
+              <strong>✅ Example Data Format:</strong><br>
+              <table class="sample-table">
+                <tr><th>Name</th><th>Staff ID</th><th>Department</th><th>Email</th><th>Contact</th></tr>
+                <tr><td>John Doe</td><td>NJSMA001</td><td>Administration</td><td>john@njsma.gov.gh</td><td>0244123456</td></tr>
+                <tr><td>Jane Smith</td><td>HR001</td><td>Human Resources</td><td>jane@njsma.gov.gh</td><td>0244234567</td></tr>
+              </table>
+            </div>
+          </div>
+          
+          <div id="uploadMessage"></div>
+        </div>
+
+        <!-- Current Staff Display -->
+        <div class="staff-list">
+          <h3>Current Staff <span id="staffCount" class="staff-count">0 Staff Members</span></h3>
+          
+          <!-- Staff Management Actions -->
+          <div class="staff-actions">
+            <button onclick="downloadTemplate()" class="btn-template">📄 Download Template</button>
+            <button onclick="viewDepartments()" class="btn-departments">🏢 View by Department</button>
+            <button onclick="sendClockInReminders()" class="btn-reminders">📧 Send Reminders</button>
+            <button onclick="selectAllStaff()" class="btn-select-all" id="selectAllBtn">☑️ Select All</button>
+            <button onclick="deleteSelectedStaff()" class="btn-delete-selected" id="deleteSelectedBtn" disabled>🗑️ Delete Selected</button>
+            <button onclick="showDeleteAllConfirmation()" class="btn-delete-all" id="deleteAllBtn">⚠️ Delete All Staff</button>
+            <button onclick="viewStaffAnalytics()" class="btn-analytics">📊 Staff Analytics</button>
+            <button onclick="showAllStaffData()" class="btn-view-all">👁️ View All Data</button>
+          </div>
+          
+          <!-- Bulk Actions Info -->
+          <div id="bulkActionsInfo" class="bulk-actions-info">
+            <span id="selectedCount">0</span> staff member(s) selected
+            <button onclick="clearSelection()" class="btn-clear-selection">Clear Selection</button>
+          </div>
+          
+          <table class="data-table" id="staffTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" title="Select all staff members" aria-label="Select all staff members"></th>
+                <th>Staff Name</th>
+                <th>Staff ID</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Date Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staffTableBody">
+              <!-- Staff data will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="deleteModalTitle">⚠️ Confirm Deletion</h3>
+        <span class="close" onclick="closeDeleteModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="warning-message">
+          <div class="warning-icon">🚨</div>
+          <div class="warning-text">
+            <h4>This action cannot be undone!</h4>
+            <p id="deleteModalMessage">Are you sure you want to proceed?</p>
+          </div>
+        </div>
+        
+        <div id="deleteDetails" class="delete-details">
+          <!-- Dynamic content will be inserted here -->
+        </div>
+        
+        <div class="deletion-options">
+          <label class="radio-option">
+            <input type="radio" name="deleteType" value="transfer" checked>
+            <span class="radio-text">Transfer/Deactivate (Recommended)</span>
+            <small>Mark as inactive, preserves all data</small>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="deleteType" value="permanent">
+            <span class="radio-text">Permanent Deletion</span>
+            <small>Completely removes from system</small>
+          </label>
+        </div>
+        
+        <div class="impact-warning">
+          <strong>⚠️ Impact:</strong>
+          <ul>
+            <li>All attendance records for deleted staff will remain but show as "Unknown Employee"</li>
+            <li>Leave requests from deleted staff will be preserved</li>
+            <li>This action is permanent and cannot be reversed</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeDeleteModal()" class="btn-cancel">Cancel</button>
+        <button id="confirmDeleteBtn" onclick="confirmDeletion()" class="btn-confirm-delete">
+          <span class="btn-icon">🗑️</span>
+          <span class="btn-text">Delete Permanently</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Management Modal -->
+  <div id="departmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🏢 Department Management</h3>
+        <span class="close" onclick="closeDepartmentModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="departmentList" class="department-list">
+          <!-- Department data will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff Analytics Modal -->
+  <div id="analyticsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📊 Staff Analytics</h3>
+        <span class="close" onclick="closeAnalyticsModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="analytics-filters">
+          <label for="analyticsPeriod">Analysis Period:</label>
+          <select id="analyticsPeriod" onchange="loadStaffAnalytics()">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+        </div>
+        
+        <div id="analyticsContent" class="analytics-content">
+          <!-- Analytics data will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Notifications Modal -->
+  <div id="notificationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="notificationModalTitle">📧 Send Clock-In Reminders</h3>
+        <span class="close" onclick="closeNotificationModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="notification-settings">
+          <div class="form-group">
+            <label for="reminderTime">Cutoff Time for Reminders:</label>
+            <input type="time" id="reminderTime" value="09:30" onchange="loadReminderPreview()">
+            <small>Send reminders to staff who haven't clocked in after this time</small>
+          </div>
+        </div>
+        
+        <div id="notificationPreview" class="notification-preview">
+          <!-- Preview of who will receive reminders -->
+        </div>
+        
+        <div id="notificationHistory" class="notification-history">
+          <h4>Recent Notifications</h4>
+          <!-- Notification history will be loaded here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeNotificationModal()" class="btn-cancel">Cancel</button>
+        <button onclick="sendReminders()" class="btn-send-reminders">
+          <span class="btn-icon">📧</span>
+          <span class="btn-text">Send Reminders</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Staff Modal -->
+  <div id="editStaffModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✏️ Edit Staff Member</h3>
+        <span class="close" onclick="closeEditStaffModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="editStaffForm" class="staff-form">
+          <input type="hidden" id="editStaffId">
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="editStaffName">Staff Name: <span class="required">*</span></label>
+              <input type="text" id="editStaffName" required>
+            </div>
+            <div class="form-group">
+              <label for="editStaffDepartment">Department/Unit:</label>
+              <input type="text" id="editStaffDepartment">
+            </div>
+            <div class="form-group">
+              <label for="editStaffEmail">Email Address:</label>
+              <input type="email" id="editStaffEmail">
+            </div>
+            <div class="form-group">
+              <label for="editStaffContact">Contact Number:</label>
+              <input type="tel" id="editStaffContact">
+            </div>
+            <div class="form-group">
+              <label for="editStaffStatus">Status:</label>
+              <select id="editStaffStatus">
+                <option value="true">Active</option>
+                <option value="false">Inactive/Transferred</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeEditStaffModal()" class="btn-cancel">Cancel</button>
+        <button onclick="updateStaff()" class="btn-update-staff">
+          <span class="btn-icon">💾</span>
+          <span class="btn-text">Update Staff</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View All Staff Data Modal -->
+  <div id="viewAllDataModal" class="modal">
+    <div class="modal-content" style="max-width: 95%; width: 1200px;">
+      <div class="modal-header">
+        <h3>👁️ All Staff Data Overview</h3>
+        <span class="close" onclick="closeViewAllDataModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="data-overview-stats">
+          <div class="stat-card">
+            <div class="stat-value" id="totalStaffCount">0</div>
+            <div class="stat-label">Total Staff</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="activeStaffCount">0</div>
+            <div class="stat-label">Active Staff</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="departmentCount">0</div>
+            <div class="stat-label">Departments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="recentAdditionsCount">0</div>
+            <div class="stat-label">Recent Additions (30 days)</div>
+          </div>
+        </div>
+        
+        <div class="data-actions">
+          <button onclick="exportAllStaffData()" class="btn-export">📊 Export All Data</button>
+          <button onclick="printAllStaffData()" class="btn-print">🖨️ Print Report</button>
+          <button onclick="deleteAllStaffConfirm()" class="btn-delete-all-confirm">⚠️ Delete All Data</button>
+        </div>
+        
+        <div class="scrollable-table">
+          <table class="full-data-table">
+            <thead>
+              <tr>
+                <th>Staff Name</th>
+                <th>Staff ID</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Date Added</th>
+                <th>Last Modified</th>
+                <th>Quick Actions</th>
+              </tr>
+            </thead>
+            <tbody id="allDataTableBody">
+              <!-- All staff data will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeViewAllDataModal()" class="btn-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

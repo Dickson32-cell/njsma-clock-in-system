@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check Status - NJSMA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="leave-request.html">Leave Request</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="status-check-section" role="main" aria-labelledby="status-heading">
+        <h2 id="status-heading">🔍 Check Employee Status</h2>
+
+        <!-- Real-time Clock Display -->
+        <div class="clock-display" role="region" aria-label="Current time and date" aria-live="polite">
+          <div class="current-time" id="currentTime" aria-label="Current time">--:--:--</div>
+          <div class="current-date" id="currentDate" aria-label="Current date">Loading...</div>
+        </div>
+
+        <!-- Employee ID Input -->
+        <div class="employee-lookup">
+          <label for="lookupEmployeeId">Enter Employee ID to Check Status:</label>
+          <div class="lookup-container">
+            <input type="text" id="lookupEmployeeId" required placeholder="Enter staff ID" aria-describedby="lookupHelp" />
+            <button type="button" id="checkStatusBtn" aria-describedby="lookupHelp">Check Status</button>
+          </div>
+          <div id="lookupHelp" class="sr-only">Enter your employee ID and click Check Status to begin the attendance process</div>
+          <div id="statusMessage" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- Status Display Area -->
+        <div id="statusDisplay" class="status-display hidden">
+          <div class="status-card">
+            <h3 id="employeeName">Employee Status</h3>
+            <div class="status-details" id="statusDetails"></div>
+            <div class="status-actions" id="statusActions"></div>
+          </div>
+        </div>
+
+        <!-- Device Status Notice -->
+        <div id="deviceStatus" class="device-notice" role="alert" aria-live="assertive">
+          <h3>🔒 Device Access Restricted</h3>
+          <p id="deviceStatusMessage"></p>
+        </div>
+
+        <!-- Contextual Help -->
+        <div id="contextualHelp" class="contextual-help" role="region" aria-label="Help and guidance">
+          💡 <strong>Step 1:</strong> Enter your Employee ID and click "Check Status" to see your current attendance status and next steps.
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

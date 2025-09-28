@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave Requests - NJSMA HR</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="staff-management.html"><i class="fas fa-users"></i> Staff Management</a></li>
+        <li><a href="attendance-report.html"><i class="fas fa-calendar-check"></i> Attendance Records</a></li>
+        <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        <li><a href="../index.html" onclick="logoutHR()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="leave-requests-section">
+        <div class="section-header">
+          <h2><i class="fas fa-calendar-times"></i> Leave Requests Management</h2>
+          <p class="section-subtitle">Review and manage employee leave requests</p>
+        </div>
+
+        <!-- Leave Statistics Cards -->
+        <div class="leave-stats">
+          <div class="stat-card leave-pending">
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+              <h3 id="pendingCount">--</h3>
+              <p>Pending Requests</p>
+            </div>
+          </div>
+          <div class="stat-card leave-approved">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3 id="approvedCount">--</h3>
+              <p>Approved</p>
+            </div>
+          </div>
+          <div class="stat-card leave-rejected">
+            <div class="stat-icon">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3 id="rejectedCount">--</h3>
+              <p>Rejected</p>
+            </div>
+          </div>
+          <div class="stat-card leave-total">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+              <h3 id="totalCount">--</h3>
+              <p>Total Requests</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters and Controls -->
+        <div class="filters-section">
+          <div class="filter-controls">
+            <div class="filter-group">
+              <label for="statusFilter"><i class="fas fa-filter"></i> Filter by Status:</label>
+              <select id="statusFilter" class="filter-select">
+                <option value="all">All Requests</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="searchInput"><i class="fas fa-search"></i> Search Employee:</label>
+              <input type="text" id="searchInput" class="filter-input" placeholder="Enter employee name or ID...">
+            </div>
+            <div class="filter-actions">
+              <button id="refreshBtn" class="btn-secondary">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Requests Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3><i class="fas fa-list"></i> Leave Requests</h3>
+            <div class="table-info">
+              <span id="tableCount">0</span> requests found
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="leave-table" id="leaveRequestsTable">
+              <thead>
+                <tr>
+                  <th><i class="fas fa-user"></i> Employee</th>
+                  <th><i class="fas fa-id-card"></i> Employee ID</th>
+                  <th><i class="fas fa-calendar-plus"></i> Start Date</th>
+                  <th><i class="fas fa-calendar-minus"></i> End Date</th>
+                  <th><i class="fas fa-clock"></i> Days</th>
+                  <th><i class="fas fa-info-circle"></i> Status</th>
+                  <th><i class="fas fa-cogs"></i> Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leaveRequestsTableBody">
+                <tr class="loading-row">
+                  <td colspan="7" class="loading-cell">
+                    <div class="loading-spinner">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      <span>Loading leave requests...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions" id="bulkActions" style="display: none;">
+          <div class="bulk-actions-content">
+            <span id="selectedCount">0</span> requests selected
+            <div class="bulk-buttons">
+              <button class="btn-approve" onclick="bulkAction('approved')">
+                <i class="fas fa-check"></i> Approve Selected
+              </button>
+              <button class="btn-reject" onclick="bulkAction('rejected')">
+                <i class="fas fa-times"></i> Reject Selected
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal for Leave Details -->
+  <div id="leaveModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-calendar-week"></i> Leave Request Details</h3>
+        <span class="modal-close">&times;</span>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Modal content will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allLeaveRequests = [];
+    let selectedRequests = new Set();
+
+    // Load leave requests on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadLeaveRequests();
+
+      // Setup filters
+      document.getElementById('statusFilter').addEventListener('change', filterRequests);
+      document.getElementById('searchInput').addEventListener('input', filterRequests);
+      document.getElementById('refreshBtn').addEventListener('click', loadLeaveRequests);
+
+      // Modal close
+      document.querySelector('.modal-close').addEventListener('click', () => {
+        document.getElementById('leaveModal').style.display = 'none';
+      });
+    });
+
+    async function loadLeaveRequests() {
+      const tbody = document.getElementById('leaveRequestsTableBody');
+
+      // Show loading state
+      tbody.innerHTML = `
+        <tr class="loading-row">
+          <td colspan="7" class="loading-cell">
+            <div class="loading-spinner">
+              <i class="fas fa-spinner fa-spin"></i>
+              <span>Loading leave requests...</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const response = await fetch('/api/leave-requests');
+        const data = await response.json();
+
+        allLeaveRequests = data;
+        updateStatistics(data);
+        renderTable(data);
+
+      } catch (error) {
+        console.error('Error loading leave requests:', error);
+        tbody.innerHTML = `
+          <tr class="error-row">
+            <td colspan="7" class="error-cell">
+              <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Error loading leave requests. Please try again.</span>
+                <button onclick="loadLeaveRequests()" class="btn-retry">
+                  <i class="fas fa-redo"></i> Retry
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function updateStatistics(requests) {
+      const stats = {
+        pending: requests.filter(r => r.status === 'Pending').length,
+        approved: requests.filter(r => r.status === 'approved').length,
+        rejected: requests.filter(r => r.status === 'rejected').length,
+        total: requests.length
+      };
+
+      document.getElementById('pendingCount').textContent = stats.pending;
+      document.getElementById('approvedCount').textContent = stats.approved;
+      document.getElementById('rejectedCount').textContent = stats.rejected;
+      document.getElementById('totalCount').textContent = stats.total;
+    }
+
+    function renderTable(requests) {
+      const tbody = document.getElementById('leaveRequestsTableBody');
+      const tableCount = document.getElementById('tableCount');
+
+      if (requests.length === 0) {
+        tbody.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="7" class="empty-cell">
+              <div class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                <h4>No leave requests found</h4>
+                <p>All employee leave requests will appear here.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        tableCount.textContent = '0';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      requests.forEach((request) => {
+        const startDate = new Date(request.start_date);
+        const endDate = new Date(request.end_date);
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
+        const statusClass = request.status.toLowerCase();
+        const statusIcon = getStatusIcon(request.status);
+
+        const row = tbody.insertRow();
+        row.className = `leave-row ${statusClass}`;
+        row.innerHTML = `
+          <td class="employee-cell">
+            <div class="employee-info">
+              <div class="employee-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="employee-details">
+                <div class="employee-name">${request.employee_name}</div>
+              </div>
+            </div>
+          </td>
+          <td class="employee-id-cell">${request.employee_id}</td>
+          <td class="date-cell">
+            <div class="date-display">
+              <i class="fas fa-calendar-plus"></i>
+              ${formatDate(request.start_date)}
+            </div>
+          </td>
+          <td class="date-cell">
+            <div class="date-display">
+              <i class="fas fa-calendar-minus"></i>
+              ${formatDate(request.end_date)}
+            </div>
+          </td>
+          <td class="days-cell">
+            <span class="days-badge">${daysDiff} day${daysDiff > 1 ? 's' : ''}</span>
+          </td>
+          <td class="status-cell">
+            <span class="status-badge status-${statusClass}">
+              ${statusIcon} ${request.status}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              ${request.status === 'Pending' ?
+                `<button onclick="updateLeaveStatus('${request.id}', 'approved')" class="btn-action btn-approve" title="Approve Request">
+                   <i class="fas fa-check"></i>
+                 </button>
+                 <button onclick="updateLeaveStatus('${request.id}', 'rejected')" class="btn-action btn-reject" title="Reject Request">
+                   <i class="fas fa-times"></i>
+                 </button>` :
+                '<span class="no-actions">No actions available</span>'}
+              <button onclick="viewLeaveDetails('${request.id}')" class="btn-action btn-view" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </td>
+        `;
+      });
+
+      tableCount.textContent = requests.length;
+    }
+
+    function getStatusIcon(status) {
+      switch(status.toLowerCase()) {
+        case 'pending': return '<i class="fas fa-clock"></i>';
+        case 'approved': return '<i class="fas fa-check-circle"></i>';
+        case 'rejected': return '<i class="fas fa-times-circle"></i>';
+        default: return '<i class="fas fa-question-circle"></i>';
+      }
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function filterRequests() {
+      const statusFilter = document.getElementById('statusFilter').value;
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      let filtered = allLeaveRequests;
+
+      if (statusFilter !== 'all') {
+        filtered = filtered.filter(request => request.status.toLowerCase() === statusFilter);
+      }
+
+      if (searchTerm) {
+        filtered = filtered.filter(request =>
+          request.employee_name.toLowerCase().includes(searchTerm) ||
+          request.employee_id.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      renderTable(filtered);
+    }
+
+    async function updateLeaveStatus(requestId, status) {
+      try {
+        // Show loading state on button
+        const button = event.target.closest('.btn-action');
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        button.disabled = true;
+
+        // For now, we'll just reload the page. In a real implementation, you'd have an API endpoint to update leave status
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+
+        // Show success message
+        showNotification(`${status === 'approved' ? 'Approved' : 'Rejected'} leave request successfully!`, 'success');
+
+        loadLeaveRequests(); // Reload the data
+
+      } catch (error) {
+        console.error('Error updating leave status:', error);
+        showNotification('Error updating leave status. Please try again.', 'error');
+      }
+    }
+
+    function viewLeaveDetails(requestId) {
+      const request = allLeaveRequests.find(r => r.id == requestId);
+      if (!request) return;
+
+      const startDate = new Date(request.start_date);
+      const endDate = new Date(request.end_date);
+      const timeDiff = endDate.getTime() - startDate.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
+      const modalBody = document.getElementById('modalBody');
+      modalBody.innerHTML = `
+        <div class="leave-details">
+          <div class="detail-section">
+            <h4><i class="fas fa-user"></i> Employee Information</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <label>Name:</label>
+                <span>${request.employee_name}</span>
+              </div>
+              <div class="detail-item">
+                <label>Employee ID:</label>
+                <span>${request.employee_id}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4><i class="fas fa-calendar-alt"></i> Leave Details</h4>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <label>Start Date:</label>
+                <span>${formatDate(request.start_date)}</span>
+              </div>
+              <div class="detail-item">
+                <label>End Date:</label>
+                <span>${formatDate(request.end_date)}</span>
+              </div>
+              <div class="detail-item">
+                <label>Duration:</label>
+                <span>${daysDiff} day${daysDiff > 1 ? 's' : ''}</span>
+              </div>
+              <div class="detail-item">
+                <label>Status:</label>
+                <span class="status-badge status-${request.status.toLowerCase()}">${getStatusIcon(request.status)} ${request.status}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4><i class="fas fa-history"></i> Request History</h4>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Request Submitted</div>
+                  <div class="timeline-date">${formatDate(request.created_at)} ${new Date(request.created_at).toLocaleTimeString()}</div>
+                </div>
+              </div>
+              ${request.status !== 'Pending' ? `
+                <div class="timeline-item">
+                  <div class="timeline-marker completed"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Request ${request.status}</div>
+                    <div class="timeline-date">Just now</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('leaveModal').style.display = 'block';
+    }
+
+    function bulkAction(status) {
+      if (selectedRequests.size === 0) {
+        showNotification('Please select requests to perform bulk action.', 'warning');
+        return;
+      }
+
+      const confirmMessage = `Are you sure you want to ${status} ${selectedRequests.size} leave request${selectedRequests.size > 1 ? 's' : ''}?`;
+      if (!confirm(confirmMessage)) return;
+
+      // Process bulk action
+      selectedRequests.forEach(requestId => {
+        updateLeaveStatus(requestId, status);
+      });
+
+      selectedRequests.clear();
+      updateBulkActions();
+    }
+
+    function updateBulkActions() {
+      const bulkActions = document.getElementById('bulkActions');
+      const selectedCount = document.getElementById('selectedCount');
+
+      if (selectedRequests.size > 0) {
+        bulkActions.style.display = 'block';
+        selectedCount.textContent = selectedRequests.size;
+      } else {
+        bulkActions.style.display = 'none';
+      }
+    }
+
+    function showNotification(message, type) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+      `;
+
+      document.body.appendChild(notification);
+
+      // Show notification
+      setTimeout(() => notification.classList.add('show'), 100);
+
+      // Hide notification
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

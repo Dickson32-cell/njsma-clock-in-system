@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Report - NJSMA HR</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="staff-management.html">Staff Management</a></li>
+        <li><a href="attendance-report.html" class="active">Reports</a></li>
+        <li><a href="leave-requests.html">Leave Requests</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section>
+        <h2>Attendance Report</h2>
+        <p>Real-time attendance data from the clock-in system</p>
+        
+        <div class="report-controls">
+          <div class="filter-controls">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+            
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+            
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter">
+              <option value="">All</option>
+              <option value="present">Present</option>
+              <option value="absent">Absent</option>
+              <option value="late">Late</option>
+            </select>
+            
+            <button id="filterBtn" class="btn-secondary">Filter</button>
+          </div>
+          
+          <button id="printBtn" class="btn-primary">Print Report</button>
+          <button id="refreshBtn" class="btn-secondary">Refresh Data</button>
+        </div>
+        
+        <table class="data-table" id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Employee Name</th>
+              <th>Clock In Time</th>
+              <th>Clock Out Time</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <!-- Attendance data will be populated here -->
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+  
+  <script>
+    // Load attendance data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAttendanceData();
+      
+      // Add event listeners
+      document.getElementById('printBtn').addEventListener('click', printReport);
+      document.getElementById('refreshBtn').addEventListener('click', loadAttendanceData);
+      document.getElementById('filterBtn').addEventListener('click', loadAttendanceData);
+      
+      // Set default date range to current month
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
+      document.getElementById('endDate').value = today.toISOString().split('T')[0];
+    });
+    
+    async function loadAttendanceData() {
+      const tbody = document.getElementById('attendanceTableBody');
+      const refreshBtn = document.getElementById('refreshBtn');
+      
+      if (!tbody) return;
+      
+      // Show loading state
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #666;">Loading attendance data...</td></tr>';
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Loading...';
+      
+      try {
+        // Build query parameters
+        const params = new URLSearchParams();
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const status = document.getElementById('statusFilter').value;
+        
+        if (startDate) params.append('start_date', startDate);
+        if (endDate) params.append('end_date', endDate);
+        if (status) params.append('status', status);
+        
+        const response = await fetch(`/api/attendance-report?${params.toString()}`);
+        const data = await response.json();
+        
+        tbody.innerHTML = '';
+        
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #666;">No attendance data found for the selected filters.</td></tr>';
+        } else {
+          data.forEach((record) => {
+            const row = tbody.insertRow();
+            const clockInDate = new Date(record.clock_in_time);
+            const clockOutDate = record.clock_out_time ? new Date(record.clock_out_time) : null;
+            
+            row.innerHTML = `
+              <td>${record.employee_id}</td>
+              <td>${record.employee_name}</td>
+              <td>${clockInDate.toLocaleTimeString()}</td>
+              <td>${clockOutDate ? clockOutDate.toLocaleTimeString() : 'Not clocked out'}</td>
+              <td>${record.date}</td>
+              <td><span class="status-${record.status.toLowerCase()}">${record.status}</span></td>
+              <td>${record.location}</td>
+            `;
+          });
+        }
+      } catch (error) {
+        console.error('Error loading attendance data:', error);
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #d32f2f;">Error loading data. Please try again.</td></tr>';
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = 'Refresh Data';
+      }
+    }
+    
+    function printReport() {
+      // Create a print-friendly version
+      const printWindow = window.open('', '_blank');
+      const table = document.getElementById('attendanceTable');
+      
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Attendance Report - NJSMA</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #2c3e50; text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            .status-present { color: #4caf50; font-weight: bold; }
+            .status-absent { color: #f44336; font-weight: bold; }
+            .status-late { color: #ff9800; font-weight: bold; }
+            .print-date { text-align: center; margin-bottom: 20px; color: #666; }
+            @media print { 
+              body { margin: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>New Juaben South Municipal Assembly</h1>
+          <h2>Staff Attendance Report</h2>
+          <div class="print-date">Generated on: ${new Date().toLocaleString()}</div>
+          ${table.outerHTML}
+        </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      printWindow.print();
+    }
+  </script>
+</body>
+</html>

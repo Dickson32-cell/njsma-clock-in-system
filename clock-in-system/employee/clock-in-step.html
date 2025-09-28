@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clock In - NJSMA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="check-status.html">← Back to Status Check</a></li>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="leave-request.html">Leave Request</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="clock-in-section" role="main" aria-labelledby="clock-in-heading">
+        <h2 id="clock-in-heading">🕐 Clock In</h2>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container" role="navigation" aria-label="Attendance process steps">
+          <div class="progress-bar">
+            <div class="progress-step completed" aria-current="step">
+              <div class="step-icon" aria-hidden="true">🔍</div>
+              <div class="step-label">Check Status</div>
+            </div>
+            <div class="progress-step active">
+              <div class="step-icon" aria-hidden="true">🕐</div>
+              <div class="step-label">Clock In</div>
+            </div>
+            <div class="progress-step">
+              <div class="step-icon" aria-hidden="true">🕕</div>
+              <div class="step-label">Clock Out</div>
+            </div>
+            <div class="progress-step">
+              <div class="step-icon" aria-hidden="true">✅</div>
+              <div class="step-label">Complete</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Clock Display -->
+        <div class="clock-display" role="region" aria-label="Current time and date" aria-live="polite">
+          <div class="current-time" id="currentTime" aria-label="Current time">--:--:--</div>
+          <div class="current-date" id="currentDate" aria-label="Current date">Loading...</div>
+        </div>
+
+        <!-- Employee Info Display -->
+        <div class="employee-info-display" id="employeeInfoDisplay">
+          <div class="info-card">
+            <h3>👤 Employee Information</h3>
+            <div class="info-details" id="employeeDetails"></div>
+          </div>
+        </div>
+
+        <!-- Location Notice -->
+        <div class="location-notice">
+          <h3>📍 Location Verification Required</h3>
+          <p>
+            • Clock-in is only allowed within Assembly premises (EN-010-4770)<br>
+            • Location access will be requested when you submit<br>
+            • Clock-in deadline: <strong id="clockInDeadline">10:00 AM daily</strong>
+          </p>
+        </div>
+
+        <!-- Clock In Form -->
+        <div class="clock-in-form-container">
+          <h3>🕐 Clock In Form</h3>
+          <div class="form-card">
+            <form id="clockInForm" role="form" aria-labelledby="clock-in-heading">
+              <input type="hidden" id="employeeId" />
+              <div class="form-group">
+                <label for="clockInTime">Clock In Time:</label>
+                <input type="datetime-local" id="clockInTime" required aria-describedby="clockInHelp" />
+                <div id="clockInHelp" class="sr-only">Select the time you are clocking in. Current time is automatically filled.</div>
+              </div>
+              <button type="submit" class="action-btn clock-in-btn" aria-describedby="clockInBtnHelp">
+                <span class="btn-icon">🕐</span>
+                <span class="btn-text">Clock In</span>
+              </button>
+              <div id="clockInBtnHelp" class="sr-only">Click to clock in. Location verification will be required.</div>
+            </form>
+          </div>
+          <div id="clockInMessage" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- Device Status Notice -->
+        <div id="deviceStatus" class="device-notice" role="alert" aria-live="assertive">
+          <h3>🔒 Device Access Restricted</h3>
+          <p id="deviceStatusMessage"></p>
+        </div>
+
+        <!-- Contextual Help -->
+        <div id="contextualHelp" class="contextual-help" role="region" aria-label="Help and guidance">
+          📍 <strong>Step 2:</strong> Verify your clock-in time and click "Clock In". Location access will be requested for security verification.
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

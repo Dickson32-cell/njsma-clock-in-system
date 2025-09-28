@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave Request - NJSMA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="check-status.html"><i class="fas fa-clock"></i> Clock In</a></li>
+        <li><a href="../index.html"><i class="fas fa-home"></i> Home</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="leave-request-section">
+        <div class="section-header">
+          <h2><i class="fas fa-calendar-plus"></i> Submit Leave Request</h2>
+          <p class="section-subtitle">Request time off from work</p>
+        </div>
+
+        <!-- Leave Request Form -->
+        <div class="leave-form-container">
+          <div class="form-card leave-form-card">
+            <div class="form-header">
+              <div class="form-icon">
+                <i class="fas fa-paper-plane"></i>
+              </div>
+              <div class="form-title">
+                <h3>Leave Application Form</h3>
+                <p>Fill in the details below to submit your leave request</p>
+              </div>
+            </div>
+
+            <form id="leaveRequestForm" class="leave-form">
+              <!-- Employee ID Field -->
+              <div class="form-group">
+                <label for="employeeId">
+                  <i class="fas fa-id-card"></i> Employee ID <span class="required">*</span>
+                </label>
+                <div class="input-wrapper">
+                  <input type="text" id="employeeId" name="employeeId" required
+                         placeholder="Enter your employee ID (e.g., NJSMA001)"
+                         pattern="NJSMA\d{3}" title="Employee ID must be in format NJSMA001">
+                  <div class="input-icon">
+                    <i class="fas fa-user-tag"></i>
+                  </div>
+                </div>
+                <div class="field-help">Your unique employee identification number</div>
+              </div>
+
+              <!-- Date Range Fields -->
+              <div class="date-range-section">
+                <h4><i class="fas fa-calendar-alt"></i> Leave Period</h4>
+
+                <div class="date-fields">
+                  <div class="form-group date-group">
+                    <label for="startDate">
+                      <i class="fas fa-calendar-plus"></i> Start Date <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <input type="date" id="startDate" name="startDate" required
+                             min="" max="">
+                      <div class="input-icon">
+                        <i class="fas fa-calendar-day"></i>
+                      </div>
+                    </div>
+                    <div class="field-help">First day of your leave</div>
+                  </div>
+
+                  <div class="form-group date-group">
+                    <label for="endDate">
+                      <i class="fas fa-calendar-minus"></i> End Date <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <input type="date" id="endDate" name="endDate" required
+                             min="" max="">
+                      <div class="input-icon">
+                        <i class="fas fa-calendar-week"></i>
+                      </div>
+                    </div>
+                    <div class="field-help">Last day of your leave</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leave Summary -->
+              <div class="leave-summary" id="leaveSummary" style="display: none;">
+                <div class="summary-header">
+                  <h4><i class="fas fa-info-circle"></i> Leave Summary</h4>
+                </div>
+                <div class="summary-details">
+                  <div class="summary-item">
+                    <span class="summary-label">Duration:</span>
+                    <span class="summary-value" id="durationValue">-- days</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="summary-label">Return Date:</span>
+                    <span class="summary-value" id="returnDateValue">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="summary-label">Working Days:</span>
+                    <span class="summary-value" id="workingDaysValue">-- days</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leave Type (Optional Enhancement) -->
+              <div class="form-group">
+                <label for="leaveType">
+                  <i class="fas fa-list"></i> Leave Type
+                </label>
+                <div class="input-wrapper">
+                  <select id="leaveType" name="leaveType">
+                    <option value="annual">Annual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="personal">Personal Leave</option>
+                    <option value="maternity">Maternity Leave</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <div class="input-icon">
+                    <i class="fas fa-chevron-down"></i>
+                  </div>
+                </div>
+                <div class="field-help">Type of leave you are requesting</div>
+              </div>
+
+              <!-- Reason (Optional) -->
+              <div class="form-group">
+                <label for="reason">
+                  <i class="fas fa-comment"></i> Reason (Optional)
+                </label>
+                <div class="input-wrapper">
+                  <textarea id="reason" name="reason" rows="3"
+                            placeholder="Please provide a brief reason for your leave request..."
+                            maxlength="250"></textarea>
+                  <div class="input-icon">
+                    <i class="fas fa-edit"></i>
+                  </div>
+                </div>
+                <div class="field-help">Maximum 250 characters</div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                  <i class="fas fa-paper-plane"></i>
+                  <span class="btn-text">Submit Leave Request</span>
+                </button>
+                <button type="button" class="btn-reset" onclick="resetForm()">
+                  <i class="fas fa-redo"></i>
+                  <span class="btn-text">Reset Form</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Information Cards -->
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="info-content">
+              <h4>Processing Time</h4>
+              <p>Leave requests are typically processed within 2-3 business days.</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="info-content">
+              <h4>Approval Required</h4>
+              <p>All leave requests require HR approval before being granted.</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="info-content">
+              <h4>Notifications</h4>
+              <p>You will receive email notifications about your request status.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Request Message -->
+        <div id="leaveRequestMessage" class="message-container" style="display: none;">
+          <div class="message-content">
+            <div class="message-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="message-text">
+              <h4>Success!</h4>
+              <p>Your leave request has been submitted successfully.</p>
+              <div class="message-details" id="messageDetails"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeForm();
+      setupDateValidation();
+      setupFormValidation();
+    });
+
+    function initializeForm() {
+      // Set minimum date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('startDate').min = today;
+      document.getElementById('endDate').min = today;
+
+      // Set up date change listeners
+      document.getElementById('startDate').addEventListener('change', updateLeaveSummary);
+      document.getElementById('endDate').addEventListener('change', updateLeaveSummary);
+
+      // Character counter for reason field
+      document.getElementById('reason').addEventListener('input', function() {
+        const maxLength = 250;
+        const currentLength = this.value.length;
+        const fieldHelp = this.parentElement.querySelector('.field-help');
+        fieldHelp.textContent = `${currentLength}/${maxLength} characters`;
+      });
+    }
+
+    function setupDateValidation() {
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+
+      startDateInput.addEventListener('change', function() {
+        const startDate = new Date(this.value);
+        const minEndDate = new Date(startDate);
+        minEndDate.setDate(startDate.getDate() + 1); // End date must be at least 1 day after start
+
+        endDateInput.min = minEndDate.toISOString().split('T')[0];
+
+        // If end date is before new start date, clear it
+        if (endDateInput.value && new Date(endDateInput.value) <= startDate) {
+          endDateInput.value = '';
+          hideLeaveSummary();
+        }
+      });
+    }
+
+    function setupFormValidation() {
+      const form = document.getElementById('leaveRequestForm');
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+          return;
+        }
+
+        await submitLeaveRequest();
+      });
+    }
+
+    function validateForm() {
+      const employeeId = document.getElementById('employeeId').value.trim();
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+
+      // Clear previous errors
+      clearFieldErrors();
+
+      let isValid = true;
+
+      // Validate Employee ID format
+      if (!/^NJSMA\d{3}$/.test(employeeId)) {
+        showFieldError('employeeId', 'Employee ID must be in format NJSMA001');
+        isValid = false;
+      }
+
+      // Validate dates
+      if (!startDate) {
+        showFieldError('startDate', 'Start date is required');
+        isValid = false;
+      }
+
+      if (!endDate) {
+        showFieldError('endDate', 'End date is required');
+        isValid = false;
+      }
+
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (end <= start) {
+          showFieldError('endDate', 'End date must be after start date');
+          isValid = false;
+        }
+
+        // Check if dates are not too far in the future (max 1 year)
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+        if (end > maxDate) {
+          showFieldError('endDate', 'Leave cannot be requested more than 1 year in advance');
+          isValid = false;
+        }
+      }
+
+      return isValid;
+    }
+
+    function showFieldError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const fieldGroup = field.closest('.form-group');
+
+      fieldGroup.classList.add('error');
+
+      let errorElement = fieldGroup.querySelector('.field-error');
+      if (!errorElement) {
+        errorElement = document.createElement('div');
+        errorElement.className = 'field-error';
+        fieldGroup.appendChild(errorElement);
+      }
+      errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    }
+
+    function clearFieldErrors() {
+      document.querySelectorAll('.form-group.error').forEach(group => {
+        group.classList.remove('error');
+        const errorElement = group.querySelector('.field-error');
+        if (errorElement) {
+          errorElement.remove();
+        }
+      });
+    }
+
+    function updateLeaveSummary() {
+      const startDateValue = document.getElementById('startDate').value;
+      const endDateValue = document.getElementById('endDate').value;
+
+      if (!startDateValue || !endDateValue) {
+        hideLeaveSummary();
+        return;
+      }
+
+      const startDate = new Date(startDateValue);
+      const endDate = new Date(endDateValue);
+
+      if (endDate <= startDate) {
+        hideLeaveSummary();
+        return;
+      }
+
+      // Calculate duration
+      const timeDiff = endDate.getTime() - startDate.getTime();
+      const totalDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // +1 to include both start and end dates
+
+      // Calculate working days (excluding weekends)
+      let workingDays = 0;
+      for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not Sunday (0) or Saturday (6)
+          workingDays++;
+        }
+      }
+
+      // Calculate return date (next working day after end date)
+      const returnDate = new Date(endDate);
+      returnDate.setDate(returnDate.getDate() + 1);
+      while (returnDate.getDay() === 0 || returnDate.getDay() === 6) {
+        returnDate.setDate(returnDate.getDate() + 1);
+      }
+
+      // Update summary
+      document.getElementById('durationValue').textContent = `${totalDays} day${totalDays > 1 ? 's' : ''}`;
+      document.getElementById('workingDaysValue').textContent = `${workingDays} day${workingDays > 1 ? 's' : ''}`;
+      document.getElementById('returnDateValue').textContent = returnDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      showLeaveSummary();
+    }
+
+    function showLeaveSummary() {
+      const summary = document.getElementById('leaveSummary');
+      summary.style.display = 'block';
+      summary.classList.add('fade-in');
+    }
+
+    function hideLeaveSummary() {
+      const summary = document.getElementById('leaveSummary');
+      summary.style.display = 'none';
+      summary.classList.remove('fade-in');
+    }
+
+    async function submitLeaveRequest() {
+      const submitButton = document.querySelector('.btn-submit');
+      const originalHTML = submitButton.innerHTML;
+
+      // Show loading state
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span class="btn-text">Submitting...</span>';
+      submitButton.disabled = true;
+
+      try {
+        const formData = {
+          employeeId: document.getElementById('employeeId').value.trim(),
+          startDate: document.getElementById('startDate').value,
+          endDate: document.getElementById('endDate').value,
+          leaveType: document.getElementById('leaveType').value,
+          reason: document.getElementById('reason').value.trim()
+        };
+
+        const response = await fetch('/api/leave-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          showSuccessMessage(result);
+          resetForm();
+        } else {
+          showErrorMessage(result.error || 'Failed to submit leave request');
+        }
+
+      } catch (error) {
+        console.error('Error submitting leave request:', error);
+        showErrorMessage('Network error. Please check your connection and try again.');
+      } finally {
+        submitButton.innerHTML = originalHTML;
+        submitButton.disabled = false;
+      }
+    }
+
+    function showSuccessMessage(result) {
+      const messageContainer = document.getElementById('leaveRequestMessage');
+      const messageDetails = document.getElementById('messageDetails');
+
+      messageContainer.className = 'message-container success';
+      messageContainer.style.display = 'block';
+
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      const duration = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+
+      messageDetails.innerHTML = `
+        <div class="success-details">
+          <p><strong>Request ID:</strong> #${result.request_id || 'N/A'}</p>
+          <p><strong>Duration:</strong> ${duration} day${duration > 1 ? 's' : ''}</p>
+          <p><strong>Status:</strong> Pending HR Approval</p>
+          <p><strong>Next Steps:</strong> You will receive an email notification once your request is reviewed.</p>
+        </div>
+      `;
+
+      // Scroll to message
+      messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Auto-hide after 10 seconds
+      setTimeout(() => {
+        messageContainer.style.display = 'none';
+      }, 10000);
+    }
+
+    function showErrorMessage(message) {
+      const messageContainer = document.getElementById('leaveRequestMessage');
+
+      messageContainer.className = 'message-container error';
+      messageContainer.style.display = 'block';
+
+      messageContainer.innerHTML = `
+        <div class="message-content">
+          <div class="message-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="message-text">
+            <h4>Error</h4>
+            <p>${message}</p>
+          </div>
+        </div>
+      `;
+
+      // Scroll to message
+      messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetForm() {
+      document.getElementById('leaveRequestForm').reset();
+      clearFieldErrors();
+      hideLeaveSummary();
+
+      // Reset date minimums
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('startDate').min = today;
+      document.getElementById('endDate').min = today;
+
+      // Reset character counter
+      document.querySelector('.field-help').textContent = 'Maximum 250 characters';
+    }
+  </script>
+</body>
+</html>

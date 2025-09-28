@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - NJSMA HR</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="staff-management.html">Staff Management</a></li>
+        <li><a href="attendance-report.html">Attendance Records</a></li>
+        <li><a href="leave-requests.html">Leave Requests</a></li>
+        <li><a href="settings.html" class="active">Settings</a></li>
+        <li><a href="../index.html" onclick="logoutHR()">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="settings-section">
+        <h2>⚙️ System Settings</h2>
+
+        <!-- Settings Navigation Tabs -->
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="system">System Settings</button>
+          <button class="tab-btn" data-tab="security">Security</button>
+          <button class="tab-btn" data-tab="preferences">User Preferences</button>
+          <button class="tab-btn" data-tab="data">Data Management</button>
+        </div>
+
+        <!-- System Settings Tab -->
+        <div id="system-tab" class="settings-tab-content active">
+          <div class="settings-card">
+            <h3>🕐 Attendance Settings</h3>
+            <form id="attendanceSettingsForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="clockInDeadline">Clock-in Deadline:</label>
+                  <input type="time" id="clockInDeadline" value="10:00" required />
+                  <small>Employees must clock in before this time</small>
+                </div>
+                <div class="form-group">
+                  <label for="workStartTime">Work Start Time:</label>
+                  <input type="time" id="workStartTime" value="08:00" required />
+                  <small>Official work start time</small>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="workEndTime">Work End Time:</label>
+                  <input type="time" id="workEndTime" value="17:00" required />
+                  <small>Official work end time</small>
+                </div>
+                <div class="form-group">
+                  <label for="gracePeriod">Grace Period (minutes):</label>
+                  <input type="number" id="gracePeriod" value="15" min="0" max="60" required />
+                  <small>Allowed delay before marking as late</small>
+                </div>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">💾 Save Attendance Settings</button>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <h3>📍 Location Settings</h3>
+            <form id="locationSettingsForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="assemblyLat">Assembly Latitude:</label>
+                  <input type="number" id="assemblyLat" step="0.000001" value="6.673" required />
+                </div>
+                <div class="form-group">
+                  <label for="assemblyLon">Assembly Longitude:</label>
+                  <input type="number" id="assemblyLon" step="0.000001" value="-0.520" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="locationRadius">Location Radius (km):</label>
+                <input type="number" id="locationRadius" step="0.1" value="0.5" min="0.1" max="5.0" required />
+                <small>Maximum distance from assembly premises</small>
+              </div>
+
+              <div class="form-group">
+                <label for="locationName">Location Name:</label>
+                <input type="text" id="locationName" value="EN-010-4770 (Assembly Premises)" required />
+              </div>
+
+              <button type="submit" class="action-btn save-btn">📍 Save Location Settings</button>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <h3>🏢 Organization Settings</h3>
+            <form id="organizationSettingsForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="organizationName">Organization Name:</label>
+                  <input type="text" id="organizationName" value="New Juaben South Municipal Assembly" required />
+                </div>
+                <div class="form-group">
+                  <label for="organizationCode">Organization Code:</label>
+                  <input type="text" id="organizationCode" value="NJSMA" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="contactEmail">Contact Email:</label>
+                <input type="email" id="contactEmail" value="hr@njsma.gov.gh" required />
+              </div>
+
+              <div class="form-group">
+                <label for="contactPhone">Contact Phone:</label>
+                <input type="tel" id="contactPhone" value="+233 24 123 4567" required />
+              </div>
+
+              <button type="submit" class="action-btn save-btn">🏢 Save Organization Settings</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Security Settings Tab -->
+        <div id="security-tab" class="settings-tab-content">
+          <div class="settings-card">
+            <h3>� Location Verification</h3>
+            <form id="locationSecurityForm">
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="requireGpsVerification" checked />
+                  Require GPS Location Verification for Clock-In
+                </label>
+                <small>When enabled, employees must be within the Assembly premises to clock in</small>
+              </div>
+
+              <div class="form-group">
+                <label for="locationRadius">Verification Radius (km):</label>
+                <input type="number" id="locationRadius" value="0.5" min="0.1" max="2.0" step="0.1" />
+                <small>Maximum distance from Assembly premises for valid clock-in</small>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="assemblyLatitude">Assembly Latitude:</label>
+                  <input type="number" id="assemblyLatitude" value="6.673" step="0.001" />
+                </div>
+                <div class="form-group">
+                  <label for="assemblyLongitude">Assembly Longitude:</label>
+                  <input type="number" id="assemblyLongitude" value="-0.520" step="0.001" />
+                </div>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">📍 Save Location Settings</button>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <h3>�🔐 Password Management</h3>
+            <form id="passwordChangeForm">
+              <div class="form-group">
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" id="currentPassword" required />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="newPassword">New Password:</label>
+                  <input type="password" id="newPassword" required />
+                </div>
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm New Password:</label>
+                  <input type="password" id="confirmPassword" required />
+                </div>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">🔑 Change Password</button>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <h3>⏰ Session Management</h3>
+            <form id="sessionSettingsForm">
+              <div class="form-group">
+                <label for="sessionTimeout">Session Timeout (minutes):</label>
+                <input type="number" id="sessionTimeout" value="60" min="15" max="480" required />
+                <small>Auto-logout after inactivity</small>
+              </div>
+
+              <div class="form-group">
+                <label for="maxLoginAttempts">Max Login Attempts:</label>
+                <input type="number" id="maxLoginAttempts" value="5" min="3" max="10" required />
+                <small>Before account lockout</small>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="requireStrongPassword" checked />
+                  Require Strong Passwords
+                </label>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="enableTwoFactor" />
+                  Enable Two-Factor Authentication
+                </label>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">⏰ Save Session Settings</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- User Preferences Tab -->
+        <div id="preferences-tab" class="settings-tab-content">
+          <div class="settings-card">
+            <h3>🎨 Display Preferences</h3>
+            <form id="displayPreferencesForm">
+              <div class="form-group">
+                <label for="theme">Theme:</label>
+                <select id="theme">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="auto">Auto (System)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="language">Language:</label>
+                <select id="language">
+                  <option value="en">English</option>
+                  <option value="fr">French</option>
+                  <option value="ha">Hausa</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="timezone">Timezone:</label>
+                <select id="timezone">
+                  <option value="Africa/Accra">GMT (Accra)</option>
+                  <option value="UTC">UTC</option>
+                </select>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">🎨 Save Display Preferences</button>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <h3>🔔 Notification Settings</h3>
+            <form id="notificationSettingsForm">
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="emailNotifications" checked />
+                  Email Notifications
+                </label>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="lateArrivalAlerts" checked />
+                  Late Arrival Alerts
+                </label>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="leaveRequestNotifications" checked />
+                  Leave Request Notifications
+                </label>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="systemMaintenanceAlerts" />
+                  System Maintenance Alerts
+                </label>
+              </div>
+
+              <button type="submit" class="action-btn save-btn">🔔 Save Notification Settings</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Data Management Tab -->
+        <div id="data-tab" class="settings-tab-content">
+          <div class="settings-card">
+            <h3>💾 Data Export</h3>
+            <div class="export-options">
+              <button class="action-btn export-btn" onclick="exportAttendanceData()">📊 Export Attendance Data</button>
+              <button class="action-btn export-btn" onclick="exportStaffData()">👥 Export Staff Data</button>
+              <button class="action-btn export-btn" onclick="exportLeaveData()">📋 Export Leave Requests</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>🔄 Data Maintenance</h3>
+            <div class="maintenance-options">
+              <button class="action-btn maintenance-btn warning" onclick="backupDatabase()">💾 Create Backup</button>
+              <button class="action-btn maintenance-btn danger" onclick="clearOldData()">🗑️ Clear Old Records (90+ days)</button>
+              <button class="action-btn maintenance-btn danger" onclick="resetSystem()">🔄 Reset System</button>
+            </div>
+            <div class="warning-notice">
+              <p><strong>⚠️ Warning:</strong> Reset System will delete all data. Make sure to create a backup first!</p>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>📊 System Information</h3>
+            <div class="system-info">
+              <div class="info-item">
+                <span class="info-label">Database:</span>
+                <span class="info-value">SQLite 3</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Total Employees:</span>
+                <span class="info-value" id="totalEmployees">--</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Total Records:</span>
+                <span class="info-value" id="totalRecords">--</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Last Backup:</span>
+                <span class="info-value" id="lastBackup">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Messages -->
+        <div id="settingsMessage" class="settings-message"></div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

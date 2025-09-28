@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clock In - NJSMA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="leave-request.html">Leave Request</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="redirect-section" role="main" aria-labelledby="redirect-heading">
+        <h2 id="redirect-heading">🔄 Redirecting to Employee Status Check</h2>
+        
+        <div class="redirect-notice">
+          <p>The attendance system now uses a step-by-step process for better user experience.</p>
+          <p>You will be redirected to the status check page shortly...</p>
+          <div class="redirect-actions">
+            <a href="check-status.html" class="action-btn primary-btn">Go to Status Check</a>
+            <a href="../index.html" class="action-btn secondary-btn">Return to Home</a>
+          </div>
+        </div>
+        
+        <!-- Auto-redirect -->
+        <script>
+          setTimeout(() => {
+            window.location.href = 'check-status.html';
+          }, 3000);
+        </script>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

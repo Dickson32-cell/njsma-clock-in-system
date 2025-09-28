@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Login - NJSMA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="staff-login-section">
+        <h2>👤 Staff Login</h2>
+        
+        <!-- Real-time Clock Display -->
+        <div class="clock-display" role="region" aria-label="Current time and date" aria-live="polite">
+          <div class="current-time" id="currentTime" aria-label="Current time">--:--:--</div>
+          <div class="current-date" id="currentDate" aria-label="Current date">Loading...</div>
+        </div>
+
+        <!-- Staff Login Form -->
+        <div class="login-form-container">
+          <div class="form-card">
+            <h3>� Staff Account Login</h3>
+            <form id="staffLoginForm" role="form">
+              <div class="form-group">
+                <label for="staffId">Staff ID:</label>
+                <input type="text" id="staffId" required placeholder="Enter your Staff ID" autocomplete="username" />
+                <small>Enter your assigned Staff ID to access your personal account</small>
+              </div>
+
+              <button type="submit" class="action-btn staff-login-btn">
+                <span class="btn-icon">�</span>
+                <span class="btn-text">Access My Account</span>
+              </button>
+            </form>
+            
+            <div id="loginMessage" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="help-section">
+          <h4>📋 How to Login</h4>
+          <ul>
+            <li>• Enter your assigned Staff ID to access your account</li>
+            <li>• Once logged in, you can clock in/out, view reports, and request leave</li>
+            <li>• Contact HR if you forgot your Staff ID or need assistance</li>
+            <li>• All attendance actions require login to your personal account</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR Login - NJSMA Clock-In System</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="../js/scripts.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../assets/logo.png" alt="New Juaben South Municipal Assembly Logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../employee/clock-in.html">Employee Portal</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <section class="login-section">
+        <h2>HR Login</h2>
+        <p class="login-subtitle">Please enter your credentials to access the HR dashboard</p>
+        <form id="hrLoginForm">
+          <div class="form-group">
+            <label for="hrEmail">Email Address:</label>
+            <input type="email" id="hrEmail" name="email" required placeholder="Enter your email address" />
+          </div>
+          <div class="form-group">
+            <label for="hrPassword">Password:</label>
+            <input type="password" id="hrPassword" name="password" required placeholder="Enter your password" />
+          </div>
+          <button type="submit" class="login-btn">Login to HR Dashboard</button>
+        </form>
+        <div id="loginMessage"></div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 New Juaben South Municipal Assembly. All rights reserved.</p>
+  </footer>
+</body>
+</html>
