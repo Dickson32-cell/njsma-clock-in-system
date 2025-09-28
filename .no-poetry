@@ -1,0 +1,2 @@
+# This file tells Render to use pip instead of Poetry
+# Required for Render deployment
